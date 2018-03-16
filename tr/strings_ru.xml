@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<messages>
+  <message id="ui.AttendanceJournal">Журнал посещаемости</message>
+
+  <message id="ui.CheckIn">Отметиться</message>
+  <message id="ui.CheckedIn">Вы отметились</message>
+  <message id="ui.AlreadyChecked">Вы уже отметились</message>
+  <message id="ui.InappropriateTime">Неподходящее время, дождитесь начала пары</message>
+
+  <message id="ui.SignIn">Вход</message>
+  <message id="ui.SignUp">Регистрация</message>
+
+  <message id="ui.LoggedInAs">Вы вошли как</message>
+  <message id="ui.LogOut">Выход</message>
+
+  <message id="ui.Login">Логин</message>
+  <message id="ui.Password">Пароль</message>
+  <message id="ui.RepeatPassword">Повторите пароль</message>
+  <message id="ui.RememberMe">Запомнить меня</message>
+  <message id="ui.Register">Регистрация</message>
+  <message id="ui.Surame">Фамилия</message>
+  <message id="ui.FirstName">Имя</message>
+  <message id="ui.MiddleName">Отчество</message>
+  <message id="ui.Group">Группа</message>
+  <message id="ui.AllFieldsFilled">Все поля должны быть заполнены</message>
+  <message id="ui.PassDoNotMatch">Пароли не совпадают</message>
+</messages>

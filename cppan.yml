@@ -1,0 +1,111 @@
+local_settings:
+    use_shared_libs: false
+    rc_enabled: false
+    #storage_dir: .s
+    #build_dir_type: local
+    #use_cache: true
+    builds:
+        vs_release:
+            generator: Visual Studio 15 2017
+
+        vs_release64:
+            generator: Visual Studio 15 2017 Win64
+
+        vs_preview:
+            c_compiler: c:/Program Files (x86)/Microsoft Visual Studio/Preview/Community/VC/Tools/MSVC/14.12.25805/bin/Hostx64/x64/cl.exe
+            cxx_compiler: c:/Program Files (x86)/Microsoft Visual Studio/Preview/Community/VC/Tools/MSVC/14.12.25805/bin/Hostx64/x64/cl.exe
+
+        vs_llvm:
+            generator: Visual Studio 15 2017 Win64
+            toolset: LLVM-vs2014
+            configuration: Debug
+
+        # run vcvars64 before this config
+        win_clang_ninja_dbg:
+            generator: Ninja
+            c_compiler: clang-cl
+            cxx_compiler: clang-cl
+            configuration: Debug
+
+        # run vcvars64 before this config
+        win_clang_ninja_rwdi:
+            generator: Ninja
+            c_compiler: clang-cl
+            cxx_compiler: clang-cl
+            configuration: RelWithDebInfo
+
+        # run vcvars64 before this config
+        win_clang_ninja_rel:
+            generator: Ninja
+            c_compiler: clang-cl
+            cxx_compiler: clang-cl
+            configuration: Release
+
+common_settings:
+    c++: 17
+
+projects:
+    server.webapp:
+        files: src/server/webapp/.*
+        include_directories:
+            - src/server/webapp
+
+        dependencies:
+            - support
+            - pvt.cppan.demo.emweb.wt.http: master
+            - pvt.cppan.demo.rbock.sqlpp11_connector_sqlite3: 0
+            - pvt.egorpugin.primitives.date_time: master
+            - pvt.egorpugin.primitives.cron: master
+
+        post_sources: |
+            file(GLOB_RECURSE x "${SDIR}/src/server/webapp/*")
+            source_group(TREE ${SDIR}/src/server/webapp PREFIX "Source Files" FILES ${x})
+
+            add_custom_command(OUTPUT ${BDIR}/schema.h
+                COMMAND python ${SDIR}/ddl2cpp ${SDIR}/schema.sql ${BDIR}/schema db
+            )
+            set(src ${src} ${BDIR}/schema.h)
+
+    support:
+        type: library
+        static_only: true
+
+        root_directory: src/support
+        files: .*
+
+        options:
+            any:
+                definitions:
+                    public:
+                        - UNICODE
+                compile_options:
+                    clang:
+                        public:
+                            - -Wno-assume
+                            - -Wno-unused-command-line-argument
+                            - -Wno-potentially-evaluated-expression
+                            - -Wno-delete-non-virtual-dtor
+                            - -Wno-unused-parameter
+                            - -Wno-multiple-move-vbase
+                            - -Wno-switch
+                            - -Wno-return-type
+                    gnu:
+                        public:
+                            - -w
+                            - -fpermissive
+                            #- -Wno-virtual-move-assign
+                    msvc:
+                        public:
+                            - /wd4101 # unreferenced local variable
+                            - -D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
+
+        dependencies:
+            - pvt.egorpugin.primitives.filesystem: master
+            - pvt.egorpugin.primitives.hash: master
+            - pvt.egorpugin.primitives.templates: master
+            - pvt.egorpugin.primitives.log: master
+            - pvt.cppan.demo.boost.stacktrace: 1
+
+        post_sources: |
+            file(GLOB_RECURSE x "${SDIR}/*")
+            source_group(TREE ${SDIR} PREFIX "Source Files" FILES ${x})

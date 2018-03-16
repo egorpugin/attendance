@@ -1,0 +1,6 @@
+*.lnk
+bin
+*.bat
+.DS_Store
+cppan-*
+*.lock

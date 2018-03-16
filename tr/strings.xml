@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<messages>
+  <message id="ui.AttendanceJournal">Attendance Journal</message>
+
+  <message id="ui.CheckIn">Check In</message>
+  <message id="ui.CheckedIn">You have successfully checked in</message>
+  <message id="ui.AlreadyChecked">You have already checked in</message>
+  <message id="ui.InappropriateTime">It is inappropriate time for check in right now</message>
+
+  <message id="ui.SignIn">Sign In</message>
+  <message id="ui.SignUp">Sign Up</message>
+
+  <message id="ui.LoggedInAs">Logged in as</message>
+  <message id="ui.LogOut">Log Out</message>
+
+  <message id="ui.Login">Login</message>
+  <message id="ui.form.Login">Login</message>
+  <message id="ui.Password">Password</message>
+  <message id="ui.RepeatPassword">Repeat Password</message>
+  <message id="ui.RememberMe">Remember Me</message>
+  <message id="ui.Register">Register</message>
+  <message id="ui.Surame">Surname</message>
+  <message id="ui.FirstName">First Name</message>
+  <message id="ui.MiddleName">Middle Name</message>
+  <message id="ui.Group">Group</message>
+  <message id="ui.AllFieldsFilled">All fields must be filled</message>
+  <message id="ui.PassDoNotMatch">Passwords do not match</message>
+</messages>

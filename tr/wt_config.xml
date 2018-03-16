@@ -1,0 +1,15 @@
+<server>
+    <application-settings location="*">
+        <max-request-size>
+          10000
+        </max-request-size>
+
+
+        <properties>
+            <property name="db-path">
+              db.sqlite
+            </property>
+        </properties>
+    </application-settings>
+</server>
+

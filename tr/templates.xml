@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<messages>
+
+  <message id="navbar-top">
+    <nav class="navbar navbar-default navbar-static-top" id="header">
+        <div class="container">
+            <div class="navbar-header">
+                ${index}
+            </div>
+            <ul class="navbar-form nav navbar-nav navbar-right">
+                <li style="margin-right: 10px;">${sign-in}</li>
+                <li>${sign-up}</li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right" style="margin-right: 15px;">
+                <li>${packages}</li>
+                <!--<li><a href="/organizations">Organizations</a></li>-->
+                <li style="padding-top: 6px; padding-bottom: 6px; color: #333;">${add-menu}</li>
+                <li style="padding-top: 6px; padding-bottom: 6px; color: #333;">${user-menu}</li>
+            </ul>
+        </div>
+    </nav>
+  </message>
+
+  <message id="navbar-bottom">
+    <nav class="navbar navbar-default navbar-static-bottom" id="footer">
+        <div class="container">
+            <p class="navbar-text">© 2016-2017 Egor Pugin</p>
+            <!--{{# SITE_MODERATOR}}
+            <p class="navbar-text navbar-right">{{PAGE_LOAD_TIME}}</p>
+            {{/ SITE_MODERATOR}}-->
+            <!--<ul class="nav navbar-nav navbar-right">
+                <li><a href="/about">About</a></li>
+                <li><a href="/terms">Terms</a></li>
+            </ul>-->
+        </div>
+    </nav>
+  </message>
+
+  <message id="index">
+  </message>
+
+  <message id="">
+  </message>
+</messages>
