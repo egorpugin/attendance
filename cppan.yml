@@ -63,6 +63,7 @@ projects:
 
             add_custom_command(OUTPUT ${BDIR}/schema.h
                 COMMAND python ${SDIR}/ddl2cpp ${SDIR}/schema.sql ${BDIR}/schema db
+                DEPENDS ${SDIR}/ddl2cpp ${SDIR}/schema.sql
             )
             set(src ${src} ${BDIR}/schema.h)
 

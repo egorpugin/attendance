@@ -24,4 +24,7 @@
   <message id="ui.Group">Группа</message>
   <message id="ui.AllFieldsFilled">Все поля должны быть заполнены</message>
   <message id="ui.PassDoNotMatch">Пароли не совпадают</message>
+  
+  <message id="ui.AddGroupLabel">Добавить группу</message>
+  <message id="ui.AddGroup">Добавить</message>
 </messages>

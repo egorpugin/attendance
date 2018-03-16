@@ -39,9 +39,6 @@ IndexWidget::IndexWidget()
 {
     setContentAlignment(Wt::AlignmentFlag::Center);
 
-    //auto I = addWidget(std::make_unique<Wt::WTemplate>(Wt::WString::tr("index")));
-
-    //auto H = addWidget(std::make_unique<Wt::WLabel>(Wt::WString::tr("ui.SignIn")));
 
     auto aa = ((AttendanceApplication*)Wt::WApplication::instance());
     if (aa->getUser().id == 0)
@@ -88,13 +85,113 @@ IndexWidget::IndexWidget()
 
     if (u.type_id > PersonType::Normal)
     {
-        auto ag = addWidget(std::make_unique<FormLineEdit>(Wt::WString::tr("ui.AddGroupLabel")));
-        auto b = addWidget(std::make_unique<Wt::WPushButton>(Wt::WString::tr("ui.AddGroup")));
-        b->clicked().connect([this, ag]()
-        {
-            auto &db = getAttendanceDatabase();
-            db.addGroup(ag->Widget->text().toUTF8());
-        });
+		Wt::WTabWidget *tabW = addWidget(std::make_unique<Wt::WTabWidget>());
+		tabW->setStyleClass("tabwidget");
+
+		{
+			auto c = std::make_unique<Wt::WContainerWidget>();
+			c->addWidget(std::make_unique<Wt::WBreak>());
+
+			auto ag = c->addWidget(std::make_unique<FormLineEdit>(Wt::WString::tr("ui.AddGroupLabel")));
+			auto b = c->addWidget(std::make_unique<Wt::WPushButton>(Wt::WString::tr("ui.AddGroup")));
+			b->clicked().connect([this, ag]()
+			{
+				auto &db = getAttendanceDatabase();
+				db.addGroup(ag->Widget->text().toUTF8());
+			});
+			c->addWidget(std::make_unique<Wt::WBreak>());
+
+			tabW->addTab(std::move(c), "Groups", Wt::ContentLoading::Eager);
+		}
+
+		{
+			auto c = std::make_unique<Wt::WContainerWidget>();
+			c->addWidget(std::make_unique<Wt::WBreak>());
+
+			auto ag = c->addWidget(std::make_unique<FormLineEdit>(Wt::WString::tr("ui.AddSubjectLabel")));
+			auto b = c->addWidget(std::make_unique<Wt::WPushButton>(Wt::WString::tr("ui.AddSubject")));
+			b->clicked().connect([this, ag]()
+			{
+				auto &db = getAttendanceDatabase();
+				db.addSubject(ag->Widget->text().toUTF8());
+			});
+			c->addWidget(std::make_unique<Wt::WBreak>());
+
+			tabW->addTab(std::move(c),
+				"Subjects", Wt::ContentLoading::Eager);
+		}
+
+		{
+			auto c = std::make_unique<Wt::WContainerWidget>();
+			c->addWidget(std::make_unique<Wt::WBreak>());
+
+			auto &db = getAttendanceDatabase();
+
+			auto subjects = db.getSubjects();
+			auto sw = c->addWidget(std::make_unique<LabeledWidget<Wt::WComboBox>>(Wt::WString::tr("ui.Subject")));
+			for (auto &s : subjects)
+				sw->Widget->addItem(s.name);
+
+			c->addWidget(std::make_unique<Wt::WLabel>(Wt::WString::tr("ui.Group")));
+			c->addWidget(std::make_unique<Wt::WBreak>());
+			c->addWidget(std::make_unique<Wt::WBreak>());
+			auto cgw = c->addWidget(std::make_unique<Wt::WContainerWidget>());
+			auto groups = db.getGroups();
+			auto add_groups = [cgw, groups]()
+			{
+				auto gw = cgw->addWidget(std::make_unique<Wt::WComboBox>());
+				for (auto &g : groups)
+					gw->addItem(g.name);
+			};
+			add_groups();
+			c->addWidget(std::make_unique<Wt::WBreak>());
+
+			auto addg = c->addWidget(std::make_unique<Wt::WPushButton>(Wt::WString::tr("ui.AddGroupMore")));
+			addg->clicked().connect([add_groups]()
+			{
+				add_groups();
+			});
+
+			c->addWidget(std::make_unique<Wt::WBreak>());
+			c->addWidget(std::make_unique<Wt::WBreak>());
+
+			auto teachers = db.getTeachers();
+			LabeledWidget<Wt::WComboBox> *tw = nullptr;
+			if (u.type_id >= PersonType::Administrator)
+			{
+				auto teachers = db.getTeachers();
+				tw = c->addWidget(std::make_unique<LabeledWidget<Wt::WComboBox>>(Wt::WString::tr("ui.Teacher")));
+				for (auto &t : teachers)
+					tw->Widget->addItem(t.getFio());
+			}
+
+			auto b = c->addWidget(std::make_unique<Wt::WPushButton>(Wt::WString::tr("ui.AddCourse")));
+			b->clicked().connect([this, cgw, sw, subjects, u, teachers, tw, groups]()
+			{
+				auto &db = getAttendanceDatabase();
+				auto sid = subjects[sw->Widget->currentIndex()].id;
+				auto tid = tw ? teachers[tw->Widget->currentIndex()].id : u.id;
+				std::set<db_id> gids;
+				for (auto &w : cgw->children())
+				{
+					auto cb = (Wt::WComboBox*)w;
+					gids.insert(groups[cb->currentIndex()].id);
+				}
+
+				// sem
+				auto time = boost::posix_time::second_clock::local_time();
+				auto d = time.date();
+				auto sem = (d.year() % 100) * 10;
+				sem += d.month() > 6 ? 1 : 2;
+
+				db.addCourse(sid, tid, gids, sem);
+			});
+			c->addWidget(std::make_unique<Wt::WBreak>());
+
+			tabW->addTab(std::move(c),
+				"Courses", Wt::ContentLoading::Eager);
+		}
+
     }
 }
 

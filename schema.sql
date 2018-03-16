@@ -69,3 +69,7 @@ CREATE TABLE person_group (person_group_id INTEGER PRIMARY KEY, person_id INTEGE
 DROP TABLE IF EXISTS "main"."subject";
 CREATE TABLE subject (subject_id INTEGER PRIMARY KEY, subject_name TEXT NOT NULL);
 PRAGMA foreign_keys = ON;
+
+CREATE TABLE course (
+course_id INTEGER PRIMARY KEY, subject_id INTEGER REFERENCES subject (subject_id) NOT NULL, teacher_id INTEGER REFERENCES person (person_id
+) NOT NULL, group_id INTEGER REFERENCES groups (group_id) NOT NULL, semester INTEGER NOT NULL);

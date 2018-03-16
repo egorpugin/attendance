@@ -22,7 +22,20 @@
   <message id="ui.Surame">Surname</message>
   <message id="ui.FirstName">First Name</message>
   <message id="ui.MiddleName">Middle Name</message>
-  <message id="ui.Group">Group</message>
   <message id="ui.AllFieldsFilled">All fields must be filled</message>
   <message id="ui.PassDoNotMatch">Passwords do not match</message>
+  
+  <message id="ui.Group">Group</message>
+  <message id="ui.AddGroupLabel">Add Group</message>
+  <message id="ui.AddGroup">Add</message>
+  <message id="ui.AddGroupMore">Add more groups</message>
+  
+  <message id="ui.Subject">Subject</message>
+  <message id="ui.AddSubjectLabel">Add Subject</message>
+  <message id="ui.AddSubject">Add</message>
+  
+  <message id="ui.AddCourseLabel">Add Course</message>
+  <message id="ui.AddCourse">Add</message>
+  
+  <message id="ui.Teacher">Teacher</message>
 </messages>
