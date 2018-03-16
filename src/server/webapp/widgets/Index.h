@@ -30,9 +30,18 @@ struct LabeledWidget : public Wt::WContainerWidget
 
     LabeledWidget(const Wt::WString &label)
     {
+        constexpr auto fw = std::is_base_of_v<Wt::WFormWidget, W>;
+
         Label = addWidget(std::make_unique<Wt::WLabel>(label));
+        if constexpr (!fw)
+        {
+            //addWidget(std::make_unique<Wt::WBreak>());
+            //addWidget(std::make_unique<Wt::WBreak>());
+            Label->setAttributeValue("style", "font-weight: bold; margin-bottom: 5px;");
+        }
         Widget = addWidget(std::make_unique<W>());
-        Label->setBuddy(Widget);
+        if constexpr (fw)
+            Label->setBuddy(Widget);
         addWidget(std::make_unique<Wt::WBreak>());
     }
 };

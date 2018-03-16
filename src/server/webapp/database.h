@@ -41,18 +41,18 @@ using GroupMap = std::unordered_map<int, Group>;
 
 struct Subject
 {
-	db_id id;
-	String name;
+    db_id id;
+    String name;
 };
 
 using Subjects = std::vector<Subject>;
 
 enum class PersonType : int
 {
-    Normal			= 1,
-	Teacher			= 10,
-    Administrator	= 100,
-    Root			= 1000,
+    Normal          = 1,
+    Teacher         = 10,
+    Administrator   = 100,
+    Root            = 1000,
 };
 
 struct Person
@@ -68,6 +68,8 @@ struct Person
     String surname;
     String first_name;
     String middle_name;
+
+    Groups groups;
 
     PersonType type_id = PersonType::Normal;
 
@@ -99,16 +101,16 @@ public:
     void addGroup(const String &s) const;
     Groups getGroups() const;
 
-	void addSubject(const String &s) const;
-	Subjects getSubjects() const;
+    void addSubject(const String &s) const;
+    Subjects getSubjects() const;
 
-	void addCourse(db_id sid, db_id tid, const std::set<db_id> &gids, int sem) const;
+    void addCourse(db_id sid, db_id tid, const std::set<db_id> &gids, int sem) const;
 
     db_id addPerson(const Person &p) const;
     bool findPersonByLogin(Person &p) const;
     bool findPersonByIdAndCookie(Person &p) const;
     void loadPerson(Person &p) const;
-	Persons getTeachers() const;
+    Persons getTeachers() const;
 
     CheckStatus checkIn(const CheckInInfo &i);
 

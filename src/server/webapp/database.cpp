@@ -81,46 +81,48 @@ Groups AttendanceDatabase::getGroups() const
 
 void AttendanceDatabase::addSubject(const String &s) const
 {
-	if (s.empty())
-		return;
-	const auto g = db::Subject{};
-	(*db)(insert_into(g).set(
-		g.subjectName = s
-	));
+    if (s.empty())
+        return;
+    const auto g = db::Subject{};
+    (*db)(insert_into(g).set(
+        g.subjectName = s
+    ));
 }
 
 Subjects AttendanceDatabase::getSubjects() const
 {
-	Subjects m;
-	const auto s = db::Subject{};
-	for (const auto& row : (*db)(select(all_of(s)).from(s).unconditionally().order_by(s.subjectName.asc())))
-	{
-		Subject g;
-		g.id = row.subjectId;
-		g.name = row.subjectName;
-		m.push_back(g);
-	}
-	return m;
+    Subjects m;
+    const auto s = db::Subject{};
+    for (const auto& row : (*db)(select(all_of(s)).from(s).unconditionally().order_by(s.subjectName.asc())))
+    {
+        Subject g;
+        g.id = row.subjectId;
+        g.name = row.subjectName;
+        m.push_back(g);
+    }
+    return m;
 }
 
 void AttendanceDatabase::addCourse(db_id sid, db_id tid, const std::set<db_id> &gids, int sem) const
 {
-	for (auto &gid : gids)
-	{
-		const auto c = db::Course{};
-		(*db)(insert_into(c).set(
-			c.subjectId = sid,
-			c.teacherId = tid,
-			c.groupId = gid,
-			c.semester = sem
-		));
-	}
+    for (auto &gid : gids)
+    {
+        const auto c = db::Course{};
+        (*db)(insert_into(c).set(
+            c.subjectId = sid,
+            c.teacherId = tid,
+            c.groupId = gid,
+            c.semester = sem
+        ));
+    }
 }
 
 db_id AttendanceDatabase::addPerson(const Person &p) const
 {
     const auto person = db::Person{};
-    return (*db)(insert_into(person).set(
+    const auto pg = db::PersonGroup{};
+    db->start_transaction();
+    auto uid = (*db)(insert_into(person).set(
         person.login = p.login,
         person.password = p.password,
         person.salt = p.salt,
@@ -128,6 +130,15 @@ db_id AttendanceDatabase::addPerson(const Person &p) const
         person.firstName = p.first_name,
         person.middleName = p.middle_name
     ));
+    for (auto &g : p.groups)
+    {
+        (*db)(insert_into(pg).set(
+            pg.personId = p.id,
+            pg.groupId = g.id
+        ));
+    }
+    db->commit_transaction();
+    return uid;
 }
 
 bool AttendanceDatabase::findPersonByLogin(Person &p) const
@@ -160,21 +171,21 @@ bool AttendanceDatabase::findPersonByIdAndCookie(Person &p) const
 
 Persons AttendanceDatabase::getTeachers() const
 {
-	Persons pps;
-	const auto person = db::Person{};
-	for (const auto& row : (*db)(select(all_of(person)).from(person).where(person.typeId > (int)PersonType::Normal)
-		.order_by(person.surname.asc(), person.firstName.asc(), person.middleName.asc())))
-	{
-		Person p;
-		p.id = row.personId;
-		p.login = row.login;
-		p.surname = row.surname;
-		p.first_name = row.firstName;
-		p.middle_name = row.middleName;
-		p.type_id = (PersonType)row.typeId.value();
-		pps.push_back(p);
-	}
-	return pps;
+    Persons pps;
+    const auto person = db::Person{};
+    for (const auto& row : (*db)(select(all_of(person)).from(person).where(person.typeId > (int)PersonType::Normal)
+        .order_by(person.surname.asc(), person.firstName.asc(), person.middleName.asc())))
+    {
+        Person p;
+        p.id = row.personId;
+        p.login = row.login;
+        p.surname = row.surname;
+        p.first_name = row.firstName;
+        p.middle_name = row.middleName;
+        p.type_id = (PersonType)row.typeId.value();
+        pps.push_back(p);
+    }
+    return pps;
 }
 
 void AttendanceDatabase::setCookie(const Person &p) const
@@ -198,7 +209,7 @@ void AttendanceDatabase::loadPerson(Person &p) const
     const auto person = db::Person{};
     for (const auto& row : (*db)(select(all_of(person)).from(person).where(person.personId == p.id)))
     {
-		p.id = row.personId;
+        p.id = row.personId;
         p.login = row.login;
         p.surname = row.surname;
         p.first_name = row.firstName;
