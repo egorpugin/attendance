@@ -32,9 +32,11 @@ UNIQUE ("group_name")
 -- Table structure for journal
 -- ----------------------------
 DROP TABLE IF EXISTS "main"."journal";
-CREATE TABLE journal (record_id INTEGER PRIMARY KEY,
-person_id INTEGER REFERENCES person (person_id) ON DELETE CASCADE ON UPDATE CASCADE,
-timestamp INTEGER NOT NULL DEFAULT (0));
+CREATE TABLE journal (
+    record_id INTEGER PRIMARY KEY,
+    person_id INTEGER REFERENCES person (person_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    timestamp INTEGER NOT NULL DEFAULT (0)
+);
 
 -- ----------------------------
 -- Table structure for person

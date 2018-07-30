@@ -41,6 +41,9 @@ local_settings:
             cxx_compiler: clang-cl
             configuration: Release
 
+add_directories:
+    - d:/dev/primitives
+
 common_settings:
     c++: 17
 
@@ -54,18 +57,25 @@ projects:
             - support
             - pvt.cppan.demo.emweb.wt.http: master
             - pvt.cppan.demo.rbock.sqlpp11_connector_sqlite3: 0
-            - pvt.egorpugin.primitives.date_time: master
-            - pvt.egorpugin.primitives.cron: master
+            - name: pvt.egorpugin.primitives.date_time
+              version: master
+              local: primitives.date_time
+            - name: pvt.egorpugin.primitives.cron
+              version: master
+              local: primitives.cron
+            - name: pvt.egorpugin.primitives.tools.sqlpp11.sqlite2cpp
+              version: master
+              ref: sqlite2cpp
+              local: primitives.tools.sqlpp11.sqlite2cpp
+            - name: pvt.egorpugin.primitives.sw.main
+              version: master
+              local: primitives.sw.main
 
         post_sources: |
             file(GLOB_RECURSE x "${SDIR}/src/server/webapp/*")
             source_group(TREE ${SDIR}/src/server/webapp PREFIX "Source Files" FILES ${x})
 
-            add_custom_command(OUTPUT ${BDIR}/schema.h
-                COMMAND python ${SDIR}/ddl2cpp ${SDIR}/schema.sql ${BDIR}/schema db
-                DEPENDS ${SDIR}/ddl2cpp ${SDIR}/schema.sql
-            )
-            set(src ${src} ${BDIR}/schema.h)
+            sqlite2cpp_gen_sql(${SDIR}/schema.sql schema.h db)
 
     support:
         type: library

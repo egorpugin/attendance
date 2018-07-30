@@ -39,7 +39,7 @@ path temp_directory_path(const path &subdir)
 
 path get_temp_filename(const path &subdir)
 {
-    return temp_directory_path(subdir) / fs::unique_path();
+    return temp_directory_path(subdir) / unique_path();
 }
 
 String get_stamp_filename(const String &prefix)
@@ -62,7 +62,7 @@ void findRootDirectory1(const path &p, path &root, int depth = 0)
 
     std::vector<path> pfiles;
     std::vector<path> pdirs;
-    for (auto &pi : boost::make_iterator_range(fs::directory_iterator(p), {}))
+    for (auto &pi : fs::directory_iterator(p))
     {
         auto f = pi.path().filename().string();
         if (f == CPPAN_FILENAME)

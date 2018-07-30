@@ -5,6 +5,7 @@
 #include <primitives/cron.h>
 #include <primitives/filesystem.h>
 #include <primitives/log.h>
+#include <primitives/sw/main.h>
 
 #include <Wt/WApplication.h>
 #include <Wt/WServer.h>
@@ -46,23 +47,6 @@ int WRun(int argc, char *argv[], Wt::ApplicationCreator createApplication)
         std::cerr << e.what() << "\n";
         return 1;
     }
-    catch (std::exception& e)
-    {
-        std::cerr << "exception: " << e.what() << "\n";
-        return 1;
-    }
-}
-
-int main1(int argc, char **argv)
-{
-    // persistent storage
-    Cron cron;
-    get_cron(&cron);
-
-    return WRun(argc, argv, [](const Wt::WEnvironment &env)
-    {
-        return std::make_unique<AttendanceApplication>(env);
-    });
 }
 
 void setup_log(const std::string &log_level)
@@ -79,10 +63,8 @@ void setup_log(const std::string &log_level)
     LOG_TRACE(logger, "Starting cppan...");
 }
 
-int main_setup(int argc, char **argv)
+int main(int argc, char **argv)
 {
-    setup_utf8_filesystem();
-
 #ifdef NDEBUG
     setup_log("INFO");
 #else
@@ -91,32 +73,20 @@ int main_setup(int argc, char **argv)
 
     try
     {
-        return main1(argc, argv);
+        // persistent storage
+        Cron cron;
+        get_cron(&cron);
+
+        return WRun(argc, argv, [](const Wt::WEnvironment &env)
+        {
+            return std::make_unique<AttendanceApplication>(env);
+        });
     }
     catch (Wt::WServer::Exception& e)
     {
         std::cerr << "wt exception: " << e.what() << "\n";
         return 1;
     }
-    catch (std::exception &e)
-    {
-        std::cerr << "exception: " << e.what() << "\n";
-        return 1;
-    }
-    catch (...)
-    {
-        std::cerr << "unknown exception" << "\n";
-        return 1;
-    }
-}
-
-int main(int argc, char **argv)
-{
-    auto r = main_setup(argc, argv);
-    if (r)
-    {
-    }
-    return r;
 }
 
 void configure()
