@@ -136,9 +136,9 @@ Person loginByCookie(const std::string &id, const std::string &user_session)
     if (cookie_expires < boost::posix_time::second_clock::local_time())
     {
         db.dropCookie(p);
-        // reset
-        Wt::WApplication::instance()->removeCookie(COOKIE_USER_ID);
-        Wt::WApplication::instance()->removeCookie(COOKIE_USER_SESSION);
+        logout();
+        p.id = 0;
+        return p;
     }
 
     db.loadPerson(p);
