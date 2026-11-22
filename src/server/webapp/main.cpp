@@ -63,7 +63,7 @@ void setup_log(const std::string &log_level)
     LOG_TRACE(logger, "Starting cppan...");
 }
 
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
 #ifdef NDEBUG
     setup_log("INFO");
@@ -74,8 +74,9 @@ int main(int argc, char **argv)
     try
     {
         // persistent storage
-        Cron cron;
-        get_cron(&cron);
+        Executor e;
+        Cron cron{e};
+        //get_cron(&cron);
 
         return WRun(argc, argv, [](const Wt::WEnvironment &env)
         {

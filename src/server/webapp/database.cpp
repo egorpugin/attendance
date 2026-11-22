@@ -47,7 +47,7 @@ AttendanceDatabase::AttendanceDatabase(const path &name)
 {
     fn = name;
     sql::connection_config config;
-    config.path_to_database = normalize_path(fn);
+    config.path_to_database = normalize_path(fn).string();
     config.flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
     //config.debug = true;
 
